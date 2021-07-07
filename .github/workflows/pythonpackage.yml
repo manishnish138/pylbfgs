@@ -78,3 +78,28 @@ jobs:
         twine upload --skip-existing wheelhouse/*-manylinux1_x86_64.whl
         twine upload dist/*
       continue-on-error: true
+  manylinux_aarch64:
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Build manylinux Python wheels
+      uses: RalfG/python-wheels-manylinux-build@v0.3.4-manylinux2014_aarch64
+      with:
+        python-versions: 'cp36-cp36m cp37-cp37m cp38-cp38'
+    - name: check wheel
+      run: |
+        ls wheelhouse/
+    - name: Publish wheels to PyPI
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        pip install twine
+        twine upload --skip-existing wheelhouse/*-manylinux2014_aarch64.whl
+      continue-on-error: true
