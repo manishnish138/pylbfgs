@@ -79,8 +79,7 @@ jobs:
         twine upload dist/*
       continue-on-error: true
   manylinux_aarch64:
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-    needs: test
+    #if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
